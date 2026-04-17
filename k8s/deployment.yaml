@@ -1,0 +1,55 @@
+# k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: devops-lab
+  labels:
+    app: devops-lab
+
+spec:
+  replicas: 2  # Запустим 2 экземпляра
+
+  selector:
+    matchLabels:
+      app: devops-lab
+
+  template:
+    metadata:
+      labels:
+        app: devops-lab
+
+    spec:
+      containers:
+        - name: app
+          image: devops-lab:v1
+          imagePullPolicy: Never  # Берём локальный образ
+
+          ports:
+            - containerPort: 5000
+
+          env:
+            - name: APP_VERSION
+              value: "1.0.0"
+
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 5

@@ -1,0 +1,17 @@
+# k8s/service.yaml
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: devops-lab-service
+
+spec:
+  type: NodePort  # Доступ снаружи Minikube
+
+  selector:
+    app: devops-lab  # Ищет поды с этим label
+
+  ports:
+    - port: 80          # Порт сервиса
+      targetPort: 5000  # Порт контейнера
+      nodePort: 30080   # Порт на узле (30000–32767)
